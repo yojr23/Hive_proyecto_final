@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">Hive</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="sign_up_spinner_prompt">Seleccione su carrera</string>
+    <string name="create_event_spinner_prompt">Seleccione el tipo de evento</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- UPDATE STRINGS -->
+    <string name="event_state_activo">Activo</string>
+    <string name="event_state_inactivo">Inactivo</string>
+
+    <string name="event_duration_minutos">minutos</string>
+    <string name="event_participants_personas">personas</string>
+
+    <string name="event_detail_no_asistir">No asistir</string>
+    <string name="event_detail_unirse">Unirse</string>
+
+    <string name="event_promotion">Unete a un evento</string>
+
+    <!-- STRINGS EVENTS STATUS-->
+    <string name="error_nombre_evento">Por favor ingrese su nombre</string>
+    <string name="error_lugar_evento">Por favor ingrese el lugar del evento</string>
+    <string name="error_descripcion_evento">Por favor ingrese la descripción del evento</string>
+    <string name="error_participantes_evento">Por favor ingrese la cantidad de participantes</string>
+    <string name="error_duracion_evento">Por favor ingrese la duración del evento</string>
+    <string name="error_enlaces_evento">Por favor ingrese correctamente los enlaces del evento</string>
+    <string name="error_registro_evento">Error al registrar el evento</string>
+    <string name="evento_registrado">El evento ha sido registrado correctamente</string>
+    <string name="error_registro_bad_request">"El evento no se ha registrado correctamente, por favor revise que todos los campos estén diligenciados correctamente"</string>
+    <string name="evento_cancelado">Cancelado</string>
+
+    <!-- STRINGS CAS -->
+    <string name="cas_tittle">¡Estás muy cerca a Uniandes!</string>
+    <string name="cas_description">Descubre los eventos que están esperando por ti</string>
+
+    <!-- STRINGS LOGIN -->
+    <string name="login_success">Iniciaste sesión correctamente</string>
+    <string name="login_loading">Iniciando sesión...</string>
+    <string name="login_error">Error al iniciar sesión, revise los datos</string>
+    <string name="login_error_username">Por favor ingrese su usuario</string>
+    <string name="login_error_password">Por favor ingrese su contraseña</string>
+
+    <!-- STRINGS MAIN -->
+    <string name="main_welcome">¡Bienvenido a Hive!</string>
+    <string name="main_description">La mejor app de eventos</string>
+    <string name="no_internet">No hay conexión a internet</string>
+    <string name="internet">Conectado correctamente!</string>
+    <string name="error_internet">"No hay conexión a internet, revise su conexión e intente nuevamente"</string>
+
+    <!-- STRINGS SIGN UP -->
+    <string name="sign_up_error_name">Por favor ingrese su nombre</string>
+    <string name="sign_up_error_user">Por favor ingrese su usuario</string>
+    <string name="sign_up_error_mail">Por favor ingrese su correo electrónico</string>
+    <string name="sign_up_error_mail_invalid">Por favor ingrese un correo electrónico válido</string>
+    <string name="sign_up_error_password">Por favor ingrese su contraseña</string>
+    <string name="sign_up_error_password_confirm">Por favor confirme su contraseña</string>
+    <string name="sign_up_error_password_match">Las contraseñas no coinciden</string>
+    <string name="sign_up_error_password_validation">La contraseña debe tener al menos 1 mayúscula, 1 número y 1 carácter especial y al menos 8 caracteres</string>
+    <string name="sign_up_error_user_length">El nombre de usuario debe tener al menos 4 caracteres</string>
+    <string name="sign_up_fail">Error al registrar usuario</string>
+    <string name="sign_up_error">Error al registrar usuario, revise los datos ingresados</string>
+    <string name="sign_up_empty">Error al registrar usuario, ningún campo puede estar vacío</string>
+    <string name="sign_up_success">Usuario registrado correctamente</string>
+    <string name="sign_up_user_exists">El usuario ya existe</string>
+    <string name="top_creators_error">No hay datos guardados, revisa la conexión a internet...</string>
+
+    <!-- STRINGS PROFILE -->
+    <string name="profile_time_horas">horas</string>
+    <string name="profile_time_minutos">minutos</string>
+    <string name="profile_time_segundos">segundos</string>
+    <string name="profile_correo">Correo</string>
+    <string name="profile_tiempo_app">Tiempo usado en la aplicación</string>
+    <string name="profile_cerrar_sesion">CERRAR SESIÓN</string>
+    <string name="profile_events_number">Eventos a los que perteneces</string>
+
+    <!-- STRINGS SWIPE DOWN -->
+    <string name="swipe_down_success">Datos actualizados correctamente</string>
+    <string name="swipe_down_error">Error al actualizar los datos</string>
+
+    <!-- STRINGS NUMBER OF EVENTS -->
+    <string name="number_of_events">Número de eventos:</string>
+
+    <!-- STRINGS ESTADISTICS -->
+    <string name="top_partners_error_data">No hay datos guardados, revisa la conexión a internet...</string>
+    <string name="top_partners_tittle">Estas son las personas con las que más coincides en los eventos </string>
+
+    <!-- STRINGS SPINNER FILTE BY CATEGORY -->
+    <string name="filter_by_category">Filtrar eventos por categoría</string>
+    <string name="no_events_category">No hay eventos en esta categoría</string>
+
+</resources>

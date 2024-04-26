@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerSignUp">
+        <item>Administración</item>
+        <item>Antropología</item>
+        <item>Arquitectura</item>
+        <item>Arte</item>
+        <item>Biología</item>
+        <item>Contaduría internacional</item>
+        <item>Decanatura de estudiantes</item>
+        <item>Deportes</item>
+        <item>Derecho</item>
+        <item>Diseño</item>
+        <item>Economía</item>
+        <item>Educación</item>
+        <item>Filosofía</item>
+        <item>Física</item>
+        <item>Geociencia</item>
+        <item>Escuela de gobierno</item>
+        <item>Historia</item>
+        <item>Historia del arte</item>
+        <item>Ingeniería biomédica</item>
+        <item>Ingeniería civil y ambiental</item>
+        <item>Ingeniería de alimentos</item>
+        <item>Ingeniería de sistemas y computación</item>
+        <item>Ingeniería eléctrica y electrónica</item>
+        <item>Ingeniería industrial</item>
+        <item>Ingeniería mecánica</item>
+        <item>Ingeniería química</item>
+        <item>Lenguas y cultura</item>
+        <item>Literatura</item>
+        <item>Matemáticas</item>
+        <item>Medicina</item>
+        <item>Microbiología</item>
+        <item>Música</item>
+        <item>Narrativas digitales</item>
+        <item>Psicología</item>
+        <item>Química</item>
+        <item>Otro</item>
+    </string-array>
+    <string-array name="createEvent">
+        <item>Académico</item>
+        <item>Cultural</item>
+        <item>Deportivo</item>
+        <item>Entretenimiento</item>
+        <item>Otro</item>
+    </string-array>
+    <string-array name="filterEventsByCategory">
+        <item>Todos</item>
+        <item>Académico</item>
+        <item>Cultural</item>
+        <item>Deportivo</item>
+        <item>Entretenimiento</item>
+        <item>Otro</item>
+    </string-array>
+</resources>
