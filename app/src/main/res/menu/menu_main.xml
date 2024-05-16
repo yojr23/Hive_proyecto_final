@@ -1,0 +1,30 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.vicenterincon.hive_proyectofinal.MainActivity">
+    <item
+        android:id="@+id/ic_home"
+        android:icon="@drawable/ic_baseline_home"
+        android:title="Inicio"
+        />
+
+    <item
+        android:id="@+id/ic_create"
+        android:icon="@drawable/ic_baseline_add"
+        android:title="Crear"
+        />
+
+    <item
+        android:id="@+id/ic_calendar"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:title="Calendario"
+        />
+
+    <item
+        android:id="@+id/ic_profile"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="Perfil"
+        />
+
+
+</menu>
