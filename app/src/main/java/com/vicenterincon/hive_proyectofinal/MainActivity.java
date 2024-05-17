@@ -29,13 +29,13 @@ public class MainActivity extends AppCompatActivity {
                     replaceFragment(new HomePageFragment());
                     return true;
                 case R.id.ic_create:
-                    replaceFragment(new HomePageFragment());
+                    replaceFragment(new EventCreationFragment());
                     return true;
                 case R.id.ic_calendar:
-                    replaceFragment(new HomePageFragment());
+                    replaceFragment(new CalendarFragment());
                     return true;
                 case R.id.ic_profile:
-                    replaceFragment(new HomePageFragment());
+                    replaceFragment(new UserProfileFragment());
                     return true;
                 default:
                     return false;
