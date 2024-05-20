@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "861024533815",
+    "project_id": "hivedb-b28ee",
+    "storage_bucket": "hivedb-b28ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861024533815:android:4dda09ac6ce84c4f7f2eb2",
+        "android_client_info": {
+          "package_name": "com.vicenterincon.hive_proyectofinal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Cd96Gp-GfQx8LymaZb4HehDMrKrRHIg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
