@@ -22,9 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Create a new user
+/*        // Create a new user
         User newUser = new User(
                 "unique-id",
                 "John Doe",
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Firestore", "Error adding document", e);
-                });
+                });*/
 
         //Block the screen rotation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

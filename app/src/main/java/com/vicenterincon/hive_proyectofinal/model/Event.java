@@ -34,9 +34,7 @@ public class Event {
         this.category = category;
     }
 
-    public DocumentReference getCreator() {
-        return creator;
-    }
+    public DocumentReference getCreator() { return creator; }
 
     public void setCreator(DocumentReference creator) {
         this.creator = creator;

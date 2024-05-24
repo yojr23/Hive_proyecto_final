@@ -5,59 +5,42 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.vicenterincon.hive_proyectofinal.R;
 import com.vicenterincon.hive_proyectofinal.adapters.EventsAdapter;
+import com.vicenterincon.hive_proyectofinal.model.Event;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomePageFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public HomePageFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomePageFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomePageFragment newInstance(String param1, String param2) {
-        HomePageFragment fragment = new HomePageFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private WeakReference<EventsAdapter> eventsAdapter = null;
+    private FirebaseFirestore db;
 
     @Nullable
     @Override
@@ -74,77 +57,133 @@ public class HomePageFragment extends Fragment {
         spinnerFilterCategory.setAdapter(adapter);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        eventsAdapter = new WeakReference<>(new EventsAdapter(viewModelAddParticipant, this, userSession, requireContext()));
+        eventsAdapter = new WeakReference<>(new EventsAdapter(this, requireContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(eventsAdapter.get());
 
-        EventListOfflineViewModelProviderFactory viewModelFactoryOffline = new EventListOfflineViewModelProviderFactory(requireContext());
-        viewModelEventListOffline = new ViewModelProvider(this, viewModelFactoryOffline).get(EventListOfflineViewModel.class);
-
         ProgressBar loadingProgressBar = view.findViewById(R.id.loadingProgressBar);
 
-        viewModelEventListOffline.getAllEvents().observe(getViewLifecycleOwner(), resource -> {
-            loadingProgressBar.setVisibility(View.GONE);
-            List<EventResponse> list = new ArrayList<>();
-            if (resource != null) {
-                Calendar today = Calendar.getInstance();
-                List<Event> filteredList = new ArrayList<>();
-                for (Event event : resource) {
-                    Calendar eventDate = Calendar.getInstance();
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    Date date;
-                    try {
-                        date = formatter.parse(event.getDate());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        continue;
-                    }
-                    if (date != null) {
-                        eventDate.setTime(date);
-                        if (eventDate.get(Calendar.DAY_OF_YEAR) >= today.get(Calendar.DAY_OF_YEAR)) {
-                            filteredList.add(event);
-                        }
-                    }
-                }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date today = calendar.getTime();
 
-                for (Event event : filteredList) {
-                    EventResponse eventToAdd = new EventResponse(
-                            event.getId(),
-                            event.getImage() != null ? event.getImage() : "",
-                            event.getName() != null ? event.getName() : "",
-                            event.getDescription() != null ? event.getDescription() : "",
-                            event.getDate() != null ? event.getDate() : "",
-                            event.getPlace() != null ? event.getPlace() : "",
-                            event.getNumParticipants() != null ? event.getNumParticipants() : 0,
-                            event.getCategory() != null ? event.getCategory() : "",
-                            event.getState() != null ? event.getState() : false,
-                            event.getDuration() != null ? event.getDuration() : 0,
-                            event.getCreatorId() != null ? event.getCreatorId() : "",
-                            event.getCreator() != null ? event.getCreator() : "",
-                            event.getParticipants() != null ? event.getParticipants() : Collections.emptyList(),
-                            event.getLinks() != null ? event.getLinks() : Collections.emptyList()
-                    );
-                    list.add(eventToAdd);
-                }
+        FirebaseApp.initializeApp(this.requireContext());
+        db = FirebaseFirestore.getInstance();
 
+        // Query Firestore for events from today onwards
+        CollectionReference eventsCollection = db.collection("events");
+        Query query = eventsCollection.whereGreaterThanOrEqualTo("date", today);
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                swipeRefreshLayout.setEnabled(true);
+                List<Event> events = new ArrayList<>();
+                for (DocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    events.add(event);
+                }
+                loadingProgressBar.setVisibility(View.GONE);
                 if (eventsAdapter.get() != null) {
-                    eventsAdapter.get().submitList(list);
+                    eventsAdapter.get().submitList(events);
                 }
-
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    refreshFragment(swipeRefreshLayout);
+                });
                 spinnerFilterCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        filterEventsByCategory(categories[position], list);
+                        filterEventsByCategory(categories[position], events, view, eventsAdapter.get());
                     }
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
-                        filterEventsByCategory("Todos", list);
+                        filterEventsByCategory("Todos", events, view, eventsAdapter.get());
                     }
                 });
+            } else {
+                loadingProgressBar.setVisibility(View.GONE);
             }
         });
         return view;
+    }
+
+    private void refreshFragment(SwipeRefreshLayout swipeRefreshLayout) {
+        swipeRefreshLayout.setRefreshing(true);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date today = calendar.getTime();
+
+        CollectionReference eventsCollection = db.collection("events");
+        Query query = eventsCollection.whereGreaterThanOrEqualTo("date", today);
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Event> events = new ArrayList<>();
+                for (DocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    events.add(event);
+                }
+                if (eventsAdapter.get() != null) {
+                    eventsAdapter.get().submitList(events);
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    public void filterEventsByCategory(@NonNull String category, @NonNull List<Event> listEvents, View view, EventsAdapter eventsAdapter) {
+        String categoryChecked = category;
+
+        switch (category) {
+            case "Académico":
+                categoryChecked = "ACADEMIC";
+                break;
+            case "Deportivo":
+                categoryChecked = "SPORTS";
+                break;
+            case "Cultural":
+                categoryChecked = "CULTURAL";
+                break;
+            case "Entretenimiento":
+                categoryChecked = "ENTERTAINMENT";
+                break;
+            case "Otros":
+                categoryChecked = "OTHER";
+                break;
+        }
+
+        // Filter the list based on the selected category
+        List<Event> filteredList;
+        if ("Todos".equals(categoryChecked)) {
+            filteredList = listEvents;
+        } else {
+            String finalCategoryChecked = categoryChecked;
+            filteredList = listEvents.stream()
+                    .filter(event -> finalCategoryChecked.equals(event.getCategory()))
+                    .collect(Collectors.toList());
+        }
+
+        TextView noEventsTextView = view.findViewById(R.id.noEventsTextView);
+
+        if (filteredList.isEmpty()) {
+            eventsAdapter.submitList(filteredList);
+            // If there are no events in that category, show a message
+            if (noEventsTextView != null) {
+                noEventsTextView.setVisibility(View.VISIBLE);
+                noEventsTextView.setText(view.getContext().getString(R.string.no_events_category));
+            }
+        } else {
+            if (noEventsTextView != null) {
+                noEventsTextView.setVisibility(View.GONE);
+            }
+            eventsAdapter.submitList(filteredList);
+        }
     }
 
 }

@@ -1,5 +1,9 @@
 package com.vicenterincon.hive_proyectofinal.model;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 public class User {
     private String id;
     private String name;
@@ -10,7 +14,8 @@ public class User {
     private boolean is_active;
     private String role;
     private String career;
-    private String birthdate;
+    @ServerTimestamp
+    private Date birthdate;
 
     // Default constructor required for calls to DataSnapshot.getValue(User.class)
     public User() {
@@ -18,7 +23,7 @@ public class User {
 
     // Constructor
     public User(String id, String name, String login, String email, String password, String address, boolean is_active,
-                String role, String career, String birthdate) {
+                String role, String career, Date birthdate) {
         this.id = id;
         this.name = name;
         this.login = login;
@@ -104,11 +109,11 @@ public class User {
         this.career = career;
     }
 
-    public String getBirthdate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(String birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 }
