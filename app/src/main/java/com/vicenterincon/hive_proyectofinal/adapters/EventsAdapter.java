@@ -5,7 +5,6 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,10 +24,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.vicenterincon.hive_proyectofinal.R;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vicenterincon.hive_proyectofinal.model.Event;
 import com.vicenterincon.hive_proyectofinal.model.User;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.w3c.dom.Document;
 
@@ -209,6 +211,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
                                     eventDuracionTextView.setText(event1.getDuration() + " " + holder.itemView.getContext().getString(R.string.event_duration_minutos));
                                     eventDescriptionTextView.setText(event1.getDescription());
                                     eventLugarTextView.setText(event1.getPlace());
+                                    Bitmap qrCodeBitmap = generateQRCode(eventId, 300, 300);
+
+                                    if (qrCodeBitmap != null) {
+                                        eventQRImageView.setImageBitmap(qrCodeBitmap);
+                                    }
 
                                     try {
                                         String stringParticipant = event1.getParticipants().size() + " / " + event1.getNumParticipants() + " " + holder.itemView.getContext().getString(R.string.event_participants_personas);
@@ -293,7 +300,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
         });
     }
 
-/*    private Bitmap generateQRCode(String eventId, int width, int height) {
+    private Bitmap generateQRCode(String eventId, int width, int height) {
         try {
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -313,7 +320,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
             e.printStackTrace();
         }
         return null;
-    }*/
+    }
 
     public void submitList(List<Event> list) {
         differ.submitList(list);
