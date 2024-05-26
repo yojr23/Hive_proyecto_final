@@ -53,6 +53,20 @@
                 </RelativeLayout>
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/loadingProgressBarProfile"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="visible"
+                android:indeterminateTint="@color/main_palette_blue"
+                android:progressTint="@color/main_palette_blue"
+                app:layout_constraintTop_toBottomOf="@+id/linearEventLayoutProfile"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp" />
+
             <FrameLayout
                 android:id="@+id/frameLayoutProfile"
                 android:layout_width="match_parent"
@@ -124,72 +138,78 @@
                             android:text="john.doe@email.com"
                             android:textColor="@color/textColor"
                             android:textSize="18sp" />
-
                         <TextView
-                            android:id="@+id/timeSpentLabel"
+                            android:id="@+id/rol"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="40dp"
                             android:gravity="center_horizontal"
-                            android:text="Tiempo usado en la aplicación"
+                            android:text="Rol"
                             android:textColor="@color/textColor"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/timeSpent"
+                            android:id="@+id/rolText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="5dp"
                             android:gravity="center_horizontal"
-                            android:text="5 horas"
+                            android:text="Creador"
                             android:textColor="@color/textColor"
                             android:textSize="18sp" />
-
                         <TextView
-                            android:id="@+id/eventsJoinedLabel"
+                            android:id="@+id/careerLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="40dp"
                             android:gravity="center_horizontal"
-                            android:text="Eventos a los que perteneces"
+                            android:text="Carrera"
                             android:textColor="@color/textColor"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/eventsJoined"
-                            android:layout_width="match_parent"
+                            android:id="@+id/career"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="5dp"
                             android:gravity="center_horizontal"
-                            android:text="10"
+                            android:text="Ingeniería de Sistemas"
+                            android:textColor="@color/textColor"
+                            android:textSize="18sp" />
+                        <TextView
+                            android:id="@+id/birthdateLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="40dp"
+                            android:gravity="center_horizontal"
+                            android:text="Fecha de nacimiento"
+                            android:textColor="@color/textColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/birthdate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:text="27/11/1998"
                             android:textColor="@color/textColor"
                             android:textSize="18sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </FrameLayout>
             <Button
-                android:id="@+id/EstadisticasButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Estadisticas"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfile"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/blueButtonColor"
-                />
-            <Button
                 android:id="@+id/signOutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cerrar Sesión"
-                app:layout_constraintTop_toBottomOf="@+id/EstadisticasButton"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="20dp"
