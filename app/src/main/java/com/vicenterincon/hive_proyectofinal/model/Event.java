@@ -25,6 +25,20 @@ public class Event {
     public Event() {
     }
 
+    // Argument constructor
+    public Event(String category, Date date, String description, int duration, String id, String image, String name, int numParticipants, String place, boolean state) {
+        this.category = category;
+        this.date = date;
+        this.description = description;
+        this.duration = duration;
+        this.id = id;
+        this.image = image;
+        this.name = name;
+        this.numParticipants = numParticipants;
+        this.place = place;
+        this.state = state;
+    }
+
     // Getters and Setters
     public String getCategory() {
         return category;
