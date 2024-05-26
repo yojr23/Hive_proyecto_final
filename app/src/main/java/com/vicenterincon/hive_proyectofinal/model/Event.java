@@ -26,7 +26,7 @@ public class Event {
     }
 
     // Argument constructor
-    public Event(String category, Date date, String description, int duration, String id, String image, String name, int numParticipants, String place, boolean state) {
+    public Event(String category, Date date, String description, int duration, String id, String image, String name, int numParticipants, String place, boolean state, List<DocumentReference> participants) {
         this.category = category;
         this.date = date;
         this.description = description;
@@ -37,6 +37,7 @@ public class Event {
         this.numParticipants = numParticipants;
         this.place = place;
         this.state = state;
+        this.participants = participants;
     }
 
     // Getters and Setters

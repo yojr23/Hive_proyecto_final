@@ -21,9 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.vicenterincon.hive_proyectofinal.R;
 import java.util.List;
 
@@ -152,68 +155,88 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
             // When Success
             // Hide progress bar
             // Show all components except progress bar
-            DocumentReference docRef = db.collection("events").document(event.getId());
-            docRef.get().addOnCompleteListener(task -> {
+            String eventId = event.getId();
+
+            // Reference to the events collection
+            CollectionReference eventsRef = db.collection("events");
+
+            // Create a query to search for the document with the matching id attribute
+            Query query = eventsRef.whereEqualTo("id", eventId);
+
+            // Execute the query
+            query.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        dialogProgressBar.setVisibility(View.GONE);
-                        dialogLinearLayout.setVisibility(View.VISIBLE);
-                        Event event1 = document.toObject(Event.class);
-                        eventNameTextView.setText(event1.getName());
+                    QuerySnapshot querySnapshot = task.getResult();
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                        DocumentReference docRef = document.getReference();
 
-                        if (event1.isState()) {
-                            eventEstadoTextView.setText(holder.itemView.getContext().getString(R.string.event_state_activo));
-                        } else {
-                            eventEstadoTextView.setText(holder.itemView.getContext().getString(R.string.event_state_inactivo));
-                        }
-
-                        eventIDTextView.setText(event1.getId());
-
-                        eventCategoryTextView.setText(event1.getCategory());
-
-                        DocumentReference creator1 = event1.getCreator();
-
-                        creator1.get().addOnCompleteListener(task1 -> {
+                        // Now you can use docRef to get the document details
+                        docRef.get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
                                 DocumentSnapshot document1 = task1.getResult();
                                 if (document1.exists()) {
-                                    User user = document1.toObject(User.class);
-                                    eventCreatorTextView.setText(user.getName());
+                                    dialogProgressBar.setVisibility(View.GONE);
+                                    dialogLinearLayout.setVisibility(View.VISIBLE);
+                                    Event event1 = document1.toObject(Event.class);
+                                    eventNameTextView.setText(event1.getName());
+
+                                    if (event1.isState()) {
+                                        eventEstadoTextView.setText(holder.itemView.getContext().getString(R.string.event_state_activo));
+                                    } else {
+                                        eventEstadoTextView.setText(holder.itemView.getContext().getString(R.string.event_state_inactivo));
+                                    }
+
+                                    eventIDTextView.setText(event1.getId());
+                                    eventCategoryTextView.setText(event1.getCategory());
+
+                                    DocumentReference creator1 = event1.getCreator();
+                                    creator1.get().addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            DocumentSnapshot document2 = task2.getResult();
+                                            if (document2.exists()) {
+                                                User user = document2.toObject(User.class);
+                                                eventCreatorTextView.setText(user.getName());
+                                            } else {
+                                                Log.d(TAG, "No such user document");
+                                            }
+                                        } else {
+                                            Log.d(TAG, "Failed with: ", task2.getException());
+                                        }
+                                    });
+
+                                    eventDateTextView.setText(newDate);
+                                    eventDuracionTextView.setText(event1.getDuration() + " " + holder.itemView.getContext().getString(R.string.event_duration_minutos));
+                                    eventDescriptionTextView.setText(event1.getDescription());
+                                    eventLugarTextView.setText(event1.getPlace());
+
+                                    try {
+                                        String stringParticipant = event1.getParticipants().size() + " / " + event1.getNumParticipants() + " " + holder.itemView.getContext().getString(R.string.event_participants_personas);
+                                        eventParticipantTextView.setText(stringParticipant);
+                                    } catch (Exception e) {
+                                        eventParticipantTextView.setText("0 / " + event1.getNumParticipants() + " " + holder.itemView.getContext().getString(R.string.event_participants_personas));
+                                    }
+
+                                    // Uncomment and use this part if needed
+                                    // String eventId = event.getId();
+                                    // Bitmap qrCodeBitmap = generateQRCode(eventId, 300, 300);
+                                    // if (qrCodeBitmap != null) {
+                                    //     eventQRImageView.setImageBitmap(qrCodeBitmap);
+                                    // }
+                                    // String url = event.getImage();
+                                    // eventImageView.setImageResource(R.drawable.ic_baseline_calendar_day);
                                 } else {
-                                    Log.d(TAG, "No such user document");
+                                    Log.d("TAG", "No such document");
                                 }
                             } else {
-                                Log.d(TAG, "Failed with: ", task1.getException());
+                                Log.d("TAG", "get failed with ", task1.getException());
                             }
                         });
-
-                        eventDateTextView.setText(newDate);
-
-                        eventDuracionTextView.setText(event1.getDuration() + " " + holder.itemView.getContext().getString(R.string.event_duration_minutos));
-
-                        eventDescriptionTextView.setText(event1.getDescription());
-
-                        eventLugarTextView.setText(event1.getPlace());
-
-                        String stringParticipant = event1.getParticipants().size() + " / " + event1.getNumParticipants() + " " + holder.itemView.getContext().getString(R.string.event_participants_personas);
-                        eventParticipantTextView.setText(stringParticipant);
-
-/*                            String eventId = event.getId();
-                        Bitmap qrCodeBitmap = generateQRCode(eventId, 300, 300);
-
-                        if (qrCodeBitmap != null) {
-                            eventQRImageView.setImageBitmap(qrCodeBitmap);
-                        }
-
-                        String url = event.getImage();*/
-
-                        /*eventImageView.setImageResource(R.drawable.ic_baseline_calendar_day);*/
                     } else {
-                        Log.d("TAG", "No such document");
+                        Log.d("TAG", "No document found with the given id attribute.");
                     }
                 } else {
-                    Log.d("TAG", "get failed with ", task.getException());
+                    Log.d("TAG", "Query failed with ", task.getException());
                 }
             });
 

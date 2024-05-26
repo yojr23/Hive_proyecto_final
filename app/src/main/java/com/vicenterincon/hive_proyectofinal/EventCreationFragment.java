@@ -1,7 +1,5 @@
 package com.vicenterincon.hive_proyectofinal;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +9,16 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.firebase.firestore.DocumentReference;
 import com.vicenterincon.hive_proyectofinal.adapters.SessionManager;
 import com.vicenterincon.hive_proyectofinal.model.Event;
 import com.vicenterincon.hive_proyectofinal.model.UserSession;
 import com.vicenterincon.hive_proyectofinal.utils.EventCreationHelper;
-
 import java.sql.Date;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
 
 public class EventCreationFragment extends Fragment {
 
@@ -66,9 +66,6 @@ public class EventCreationFragment extends Fragment {
             boolean state = true;
             String duration = ((EditText) getView().findViewById(R.id.inputBoxDuration)).getText().toString();
             String creador = session.getUserSession().getUserId().toString();
-            List<String> tags = Arrays.asList(((EditText) getView().findViewById(R.id.textBox2)).getText().toString().split(" "));
-            List<String> links = Arrays.asList(((EditText) getView().findViewById(R.id.textBox)).getText().toString().split(" "));
-
             if (name.isEmpty()) {
                 ((EditText) getView().findViewById(R.id.inputBox)).setError(requireContext().getString(R.string.error_nombre_evento));
                 getView().findViewById(R.id.inputBox).requestFocus();
@@ -94,11 +91,6 @@ public class EventCreationFragment extends Fragment {
                 getView().findViewById(R.id.inputBoxDuration).requestFocus();
                 return;
             }
-            if (!links.isEmpty() && links.stream().anyMatch(link -> !android.util.Patterns.WEB_URL.matcher(link).matches())) {
-                ((EditText) getView().findViewById(R.id.textBox)).setError(requireContext().getString(R.string.error_enlaces_evento));
-                getView().findViewById(R.id.textBox).requestFocus();
-                return;
-            }
 
             if (name.isEmpty() || place.isEmpty() || formattedDate.isEmpty() || description.isEmpty() || num_participants.isEmpty() || category.isEmpty() || duration.isEmpty() || creador.isEmpty()) {
                 Toast.makeText(requireContext(), requireContext().getString(R.string.error_registro_evento), Toast.LENGTH_SHORT).show();
@@ -108,7 +100,9 @@ public class EventCreationFragment extends Fragment {
             // New date with the formattedDate
             Date date = Date.valueOf(formattedDate);
 
-            Event event = new Event(category, date, description, Integer.valueOf(duration), "", "", name, Integer.valueOf(num_participants), place, state);
+            List<DocumentReference> participants = Collections.<DocumentReference>emptyList();
+
+            Event event = new Event(category, date, description, Integer.valueOf(duration), "", "", name, Integer.valueOf(num_participants), place, state, participants);
 
             UserSession userSession = session.getUserSession();
 
