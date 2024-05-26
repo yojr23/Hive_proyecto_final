@@ -17,6 +17,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.vicenterincon.hive_proyectofinal.adapters.SessionManager;
 import com.vicenterincon.hive_proyectofinal.model.User;
 import com.vicenterincon.hive_proyectofinal.model.UserSession;
@@ -42,17 +44,20 @@ public class UserProfileFragment extends Fragment {
         sessionManager = new SessionManager(requireContext());
         user = sessionManager.getUserSession();
 
+        Log.d("UserProfileFragment", "User: " + user.getUserId());
+
         FirebaseApp.initializeApp(requireContext());
         db = FirebaseFirestore.getInstance();
 
-        DocumentReference docRef = db.collection("users").document(user.getUserId());
+        Query query = db.collection("users").whereEqualTo("id", user.getUserId());
         loadingProgressBar.setVisibility(View.VISIBLE);
-        docRef.get().addOnCompleteListener(task -> {
+        query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
+                QuerySnapshot querySnapshot = task.getResult();
+                if (!querySnapshot.isEmpty()) {
                     swipeRefreshLayout.setEnabled(true);
                     loadingProgressBar.setVisibility(View.GONE);
+                    DocumentSnapshot document = querySnapshot.getDocuments().get(0);
                     User user = document.toObject(User.class);
                     TextView nameTextView = view.findViewById(R.id.userName);
                     TextView emailTextView = view.findViewById(R.id.email);
@@ -69,8 +74,7 @@ public class UserProfileFragment extends Fragment {
                     swipeRefreshLayout.setOnRefreshListener(() -> {
                         refreshFragment(swipeRefreshLayout, loadingProgressBar, view);
                     });
-                }
-                else {
+                } else {
                     Log.d("TAG", "No such document");
                     loadingProgressBar.setVisibility(View.GONE);
                 }

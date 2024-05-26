@@ -58,9 +58,9 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         TextView signUpTextView = findViewById(R.id.textViewSignUpLink);
-/*        signUpTextView.setOnClickListener(v -> {
+        signUpTextView.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
-        });*/
+        });
     }
 }
