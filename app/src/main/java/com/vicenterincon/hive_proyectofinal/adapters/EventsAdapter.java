@@ -35,8 +35,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import org.w3c.dom.Document;
-
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolder> {
 
     private final LifecycleOwner lifecycleOwner;
@@ -118,8 +116,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
 
         // Add a click listener to the card view
         cardView.setOnClickListener(v -> {
-            // TO-DO get Event by ID
-
             detailDialog.setContentView(R.layout.fragment_event_detail);
 
             LinearLayout dialogLinearLayout = detailDialog.findViewById(R.id.layoutCard);
