@@ -98,6 +98,7 @@ public class HomePageFragment extends Fragment {
         // Query Firestore for events from today onwards
         CollectionReference eventsCollection = db.collection("events");
         Query query = eventsCollection.whereGreaterThanOrEqualTo("date", today);
+
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 swipeRefreshLayout.setEnabled(true);
@@ -316,14 +317,6 @@ public class HomePageFragment extends Fragment {
                                             eventParticipantTextView.setText("0 / " + event1.getNumParticipants() + " " + requireContext().getString(R.string.event_participants_personas));
                                         }
 
-                                        // Uncomment and use this part if needed
-                                        // String eventId = event.getId();
-                                        // Bitmap qrCodeBitmap = generateQRCode(eventId, 300, 300);
-                                        // if (qrCodeBitmap != null) {
-                                        //     eventQRImageView.setImageBitmap(qrCodeBitmap);
-                                        // }
-                                        // String url = event.getImage();
-                                        // eventImageView.setImageResource(R.drawable.ic_baseline_calendar_day);
                                     } else {
                                         Log.d("TAG", "No such document");
                                     }
@@ -365,39 +358,4 @@ public class HomePageFragment extends Fragment {
         }
         return null;
     }
-                        /*joinEventButton.setOnClickListener(v -> {
-                            TextView eventIDTextView1 = detailDialog.findViewById(R.id.eventID);
-                            String eventID = eventIDTextView1.getText().toString();
-                            String userID = user.getUserId();
-                            if (userID != null && joinEventButton.getText().toString().equals(requireContext().getString(R.string.event_detail_unirse))) {
-                                viewModelAddParticipant.addParticipatEventVM(eventID, userID);
-                                viewModelAddParticipant.getAddParticipatEvent().observe(this, resource1 -> {
-                                    if (resource1 instanceof Resource.Loading) {
-                                        // Handle loading state
-                                    } else if (resource1 instanceof Resource.Success) {
-                                        if (!((Resource.Success<?>) resource1).getData().getParticipants().contains(userID)) {
-                                            ((Resource.Success<?>) resource1).getData().setParticipants(new ArrayList<>(((Resource.Success<?>) resource1).getData().getParticipants()));
-                                            ((Resource.Success<?>) resource1).getData().getParticipants().add(userID);
-                                        }
-
-                                        // Change joinEventButton text to "salir"
-                                        joinEventButton.setText(requireContext().getString(R.string.event_detail_no_asistir));
-
-                                        // Update the number of participants
-                                        String stringParticipant1 = ((Resource.Success<?>) resource1).getData().getParticipants().size() + " / " + ((Resource.Success<?>) resource1).getData().getNum_participants() + " " + requireContext().getString(R.string.event_participants_personas);
-                                        eventParticipantTextView.setText(stringParticipant1);
-                                    } else if (resource1 instanceof Resource.Error) {
-                                        // Handle error state
-                                    }
-                                });
-                            }
-                            if (userID != null && joinEventButton.getText().toString().equals(requireContext().getString(R.string.event_detail_no_asistir))) {
-                                viewModelAddParticipant.deleteParticipatEventVM(eventID, userID);
-                                viewModelAddParticipant.getDeleteParticipatEvent().observe(this, resource1 -> {
-                                    if (resource1 instanceof Resource.Loading) {
-                                        // Handle loading state
-                                    } else if (resource1 instanceof Resource.Success) {
-                                        if (((Resource.Success<?>) resource1).getData().getParticipants().contains(userID)) {
-                                            ((Resource.Success<?>) resource1).getData().getParticip*/
-
 }

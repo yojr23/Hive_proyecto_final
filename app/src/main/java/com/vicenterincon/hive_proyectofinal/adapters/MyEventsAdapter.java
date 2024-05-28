@@ -20,7 +20,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,13 +35,13 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolder> {
+public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.MListHolder> {
 
     private final LifecycleOwner lifecycleOwner;
     private final Context context;
     private FirebaseFirestore db;
 
-    public EventsAdapter(LifecycleOwner lifecycleOwner, Context context) {
+    public MyEventsAdapter(LifecycleOwner lifecycleOwner, Context context) {
         this.lifecycleOwner = lifecycleOwner;
         this.context = context;
         FirebaseApp.initializeApp(context);
@@ -199,30 +198,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
                                                 // Check if the user is already in the event
                                                 if (event1.getParticipants().contains(creator1)) {
                                                     joinEventButton.setText("Salir");
+                                                    // When pressed, remove the user from the event
                                                     joinEventButton.setOnClickListener(v1 -> {
-                                                        docRef.update("participants", FieldValue.arrayRemove(creator1))
-                                                            .addOnSuccessListener(aVoid -> {
-                                                                Toast.makeText(holder.itemView.getContext(), "Saliste del evento!", Toast.LENGTH_SHORT).show();
-                                                                joinEventButton.setText("Unirse");
-                                                                detailDialog.dismiss();
-                                                            })
-                                                            .addOnFailureListener(e -> {
-                                                                Log.e(TAG, "Error removing user from participants", e);
-                                                            });
+                                                        event1.getParticipants().remove(creator1);
+                                                        docRef.update("participants", event1.getParticipants());
+                                                        joinEventButton.setText("Unirse");
                                                     });
                                                 } else {
                                                     joinEventButton.setText("Unirse");
                                                     // When pressed, add the user to the event
                                                     joinEventButton.setOnClickListener(v1 -> {
-                                                        docRef.update("participants", FieldValue.arrayUnion(creator1))
-                                                            .addOnSuccessListener(aVoid -> {
-                                                                Toast.makeText(holder.itemView.getContext(), "Te uniste al evento!", Toast.LENGTH_SHORT).show();
-                                                                joinEventButton.setText("Salir");
-                                                                detailDialog.dismiss();
-                                                            })
-                                                            .addOnFailureListener(e -> {
-                                                                Log.e(TAG, "Error adding user to participants", e);
-                                                            });
+                                                        event1.getParticipants().add(creator1);
+                                                        docRef.update("participants", event1.getParticipants());
+                                                        joinEventButton.setText("Salir");
                                                     });
                                                 }
                                             } else {
