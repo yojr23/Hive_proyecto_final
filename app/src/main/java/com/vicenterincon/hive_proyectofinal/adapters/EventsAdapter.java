@@ -88,6 +88,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
         TextView nombre = holder.itemView.findViewById(R.id.nombre);
         TextView description = holder.itemView.findViewById(R.id.descripcion);
         TextView fecha = holder.itemView.findViewById(R.id.fecha);
+        SessionManager sessionManager = new SessionManager(context);
+        String userId = sessionManager.getUserSession().getUserId();
 
         // Change date format to "dd/mm/yyyy"
         String[] date = event.getDate().toString().split(" ");
@@ -200,29 +202,85 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
                                                 if (event1.getParticipants().contains(creator1)) {
                                                     joinEventButton.setText("Salir");
                                                     joinEventButton.setOnClickListener(v1 -> {
-                                                        docRef.update("participants", FieldValue.arrayRemove(creator1))
-                                                            .addOnSuccessListener(aVoid -> {
-                                                                Toast.makeText(holder.itemView.getContext(), "Saliste del evento!", Toast.LENGTH_SHORT).show();
-                                                                joinEventButton.setText("Unirse");
-                                                                detailDialog.dismiss();
-                                                            })
-                                                            .addOnFailureListener(e -> {
-                                                                Log.e(TAG, "Error removing user from participants", e);
-                                                            });
+                                                        // Get user of the ID of the current user
+                                                        CollectionReference userRef = db.collection("users");
+                                                        Query userQuery = userRef.whereEqualTo("id", userId);
+                                                        userQuery.get().addOnCompleteListener(task3 -> {
+                                                            if (task3.isSuccessful()) {
+                                                                QuerySnapshot userQuerySnapshot = task3.getResult();
+                                                                if (!userQuerySnapshot.isEmpty()) {
+                                                                    DocumentSnapshot userDocument = userQuerySnapshot.getDocuments().get(0);
+                                                                    DocumentReference userDocRef = userDocument.getReference();
+                                                                    userDocRef.get().addOnCompleteListener(task4 -> {
+                                                                        if (task4.isSuccessful()) {
+                                                                            DocumentSnapshot userDocument1 = task4.getResult();
+                                                                            if (userDocument1.exists()) {
+                                                                                User user1 = userDocument1.toObject(User.class);
+                                                                                docRef.update("participants", FieldValue.arrayRemove(user1))
+                                                                                    .addOnSuccessListener(aVoid -> {
+                                                                                        Toast.makeText(holder.itemView.getContext(), "Saliste del evento!", Toast.LENGTH_SHORT).show();
+                                                                                        joinEventButton.setText("Unirse");
+                                                                                        detailDialog.dismiss();
+                                                                                    })
+                                                                                    .addOnFailureListener(e -> {
+                                                                                        Log.e(TAG, "Error removing user from participants", e);
+                                                                                    });
+                                                                            } else {
+                                                                                Log.d(TAG, "No such user document");
+                                                                            }
+                                                                        } else {
+                                                                            Log.d(TAG, "Failed with: ", task4.getException());
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    Log.d(TAG, "No such user document");
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "Failed with: ", task3.getException());
+                                                            }
+                                                        });
                                                     });
                                                 } else {
                                                     joinEventButton.setText("Unirse");
                                                     // When pressed, add the user to the event
                                                     joinEventButton.setOnClickListener(v1 -> {
-                                                        docRef.update("participants", FieldValue.arrayUnion(creator1))
-                                                            .addOnSuccessListener(aVoid -> {
-                                                                Toast.makeText(holder.itemView.getContext(), "Te uniste al evento!", Toast.LENGTH_SHORT).show();
-                                                                joinEventButton.setText("Salir");
-                                                                detailDialog.dismiss();
-                                                            })
-                                                            .addOnFailureListener(e -> {
-                                                                Log.e(TAG, "Error adding user to participants", e);
-                                                            });
+                                                        // Get user of the ID of the current user
+                                                        CollectionReference userRef = db.collection("users");
+                                                        Query userQuery = userRef.whereEqualTo("id", userId);
+                                                        userQuery.get().addOnCompleteListener(task3 -> {
+                                                            if (task3.isSuccessful()) {
+                                                                QuerySnapshot userQuerySnapshot = task3.getResult();
+                                                                if (!userQuerySnapshot.isEmpty()) {
+                                                                    DocumentSnapshot userDocument = userQuerySnapshot.getDocuments().get(0);
+                                                                    DocumentReference userDocRef = userDocument.getReference();
+                                                                    userDocRef.get().addOnCompleteListener(task4 -> {
+                                                                        if (task4.isSuccessful()) {
+                                                                            DocumentSnapshot userDocument1 = task4.getResult();
+                                                                            if (userDocument1.exists()) {
+                                                                                User user1 = userDocument1.toObject(User.class);
+                                                                                docRef.update("participants", FieldValue.arrayUnion(user1))
+                                                                                    .addOnSuccessListener(aVoid -> {
+                                                                                        Toast.makeText(holder.itemView.getContext(), "Te uniste al evento!", Toast.LENGTH_SHORT).show();
+                                                                                        joinEventButton.setText("Salir");
+                                                                                        detailDialog.dismiss();
+                                                                                    })
+                                                                                    .addOnFailureListener(e -> {
+                                                                                        Log.e(TAG, "Error adding user to participants", e);
+                                                                                    });
+                                                                            } else {
+                                                                                Log.d(TAG, "No such user document");
+                                                                            }
+                                                                        } else {
+                                                                            Log.d(TAG, "Failed with: ", task4.getException());
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    Log.d(TAG, "No such user document");
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "Failed with: ", task3.getException());
+                                                            }
+                                                        });
                                                     });
                                                 }
                                             } else {
