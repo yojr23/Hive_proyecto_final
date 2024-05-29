@@ -171,7 +171,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot document = querySnapshot.getDocuments().get(0);
                         DocumentReference docRef = document.getReference();
-
                         // Now you can use docRef to get the document details
                         docRef.get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
@@ -198,91 +197,53 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
                                             if (document2.exists()) {
                                                 User user = document2.toObject(User.class);
                                                 eventCreatorTextView.setText(user.getName());
+
                                                 // Check if the user is already in the event
-                                                if (event1.getParticipants().contains(creator1)) {
-                                                    joinEventButton.setText("Salir");
-                                                    joinEventButton.setOnClickListener(v1 -> {
-                                                        // Get user of the ID of the current user
-                                                        CollectionReference userRef = db.collection("users");
-                                                        Query userQuery = userRef.whereEqualTo("id", userId);
-                                                        userQuery.get().addOnCompleteListener(task3 -> {
-                                                            if (task3.isSuccessful()) {
-                                                                QuerySnapshot userQuerySnapshot = task3.getResult();
-                                                                if (!userQuerySnapshot.isEmpty()) {
-                                                                    DocumentSnapshot userDocument = userQuerySnapshot.getDocuments().get(0);
-                                                                    DocumentReference userDocRef = userDocument.getReference();
-                                                                    userDocRef.get().addOnCompleteListener(task4 -> {
-                                                                        if (task4.isSuccessful()) {
-                                                                            DocumentSnapshot userDocument1 = task4.getResult();
-                                                                            if (userDocument1.exists()) {
-                                                                                User user1 = userDocument1.toObject(User.class);
-                                                                                docRef.update("participants", FieldValue.arrayRemove(user1))
-                                                                                    .addOnSuccessListener(aVoid -> {
-                                                                                        Toast.makeText(holder.itemView.getContext(), "Saliste del evento!", Toast.LENGTH_SHORT).show();
-                                                                                        joinEventButton.setText("Unirse");
-                                                                                        detailDialog.dismiss();
-                                                                                    })
-                                                                                    .addOnFailureListener(e -> {
-                                                                                        Log.e(TAG, "Error removing user from participants", e);
-                                                                                    });
-                                                                            } else {
-                                                                                Log.d(TAG, "No such user document");
-                                                                            }
-                                                                        } else {
-                                                                            Log.d(TAG, "Failed with: ", task4.getException());
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    Log.d(TAG, "No such user document");
-                                                                }
+                                                CollectionReference userRef = db.collection("users");
+                                                Query userQuery = userRef.whereEqualTo("id", userId);
+                                                userQuery.get().addOnCompleteListener(task3 -> {
+                                                    if (task3.isSuccessful()) {
+                                                        QuerySnapshot userQuerySnapshot = task3.getResult();
+                                                        if (!userQuerySnapshot.isEmpty()) {
+                                                            DocumentSnapshot userDocument = userQuerySnapshot.getDocuments().get(0);
+                                                            DocumentReference userDocRef = userDocument.getReference();
+
+                                                            if (event1.getParticipants().contains(userDocRef)) {
+                                                                joinEventButton.setText("Salir");
+                                                                joinEventButton.setOnClickListener(v1 -> {
+                                                                    docRef.update("participants", FieldValue.arrayRemove(userDocRef))
+                                                                            .addOnSuccessListener(aVoid -> {
+                                                                                Toast.makeText(holder.itemView.getContext(), "Saliste del evento!", Toast.LENGTH_SHORT).show();
+                                                                                joinEventButton.setText("Unirse");
+                                                                                detailDialog.dismiss();
+                                                                            })
+                                                                            .addOnFailureListener(e -> {
+                                                                                Log.e(TAG, "Error removing user from participants", e);
+                                                                            });
+                                                                });
                                                             } else {
-                                                                Log.d(TAG, "Failed with: ", task3.getException());
+                                                                joinEventButton.setText("Unirse");
+                                                                // When pressed, add the user to the event
+                                                                joinEventButton.setOnClickListener(v1 -> {
+                                                                    docRef.update("participants", FieldValue.arrayUnion(userDocRef))
+                                                                            .addOnSuccessListener(aVoid -> {
+                                                                                Toast.makeText(holder.itemView.getContext(), "Te uniste al evento!", Toast.LENGTH_SHORT).show();
+                                                                                joinEventButton.setText("Salir");
+                                                                                detailDialog.dismiss();
+                                                                            })
+                                                                            .addOnFailureListener(e -> {
+                                                                                Log.e(TAG, "Error adding user to participants", e);
+                                                                            });
+                                                                });
                                                             }
-                                                        });
-                                                    });
-                                                } else {
-                                                    joinEventButton.setText("Unirse");
-                                                    // When pressed, add the user to the event
-                                                    joinEventButton.setOnClickListener(v1 -> {
-                                                        // Get user of the ID of the current user
-                                                        CollectionReference userRef = db.collection("users");
-                                                        Query userQuery = userRef.whereEqualTo("id", userId);
-                                                        userQuery.get().addOnCompleteListener(task3 -> {
-                                                            if (task3.isSuccessful()) {
-                                                                QuerySnapshot userQuerySnapshot = task3.getResult();
-                                                                if (!userQuerySnapshot.isEmpty()) {
-                                                                    DocumentSnapshot userDocument = userQuerySnapshot.getDocuments().get(0);
-                                                                    DocumentReference userDocRef = userDocument.getReference();
-                                                                    userDocRef.get().addOnCompleteListener(task4 -> {
-                                                                        if (task4.isSuccessful()) {
-                                                                            DocumentSnapshot userDocument1 = task4.getResult();
-                                                                            if (userDocument1.exists()) {
-                                                                                User user1 = userDocument1.toObject(User.class);
-                                                                                docRef.update("participants", FieldValue.arrayUnion(user1))
-                                                                                    .addOnSuccessListener(aVoid -> {
-                                                                                        Toast.makeText(holder.itemView.getContext(), "Te uniste al evento!", Toast.LENGTH_SHORT).show();
-                                                                                        joinEventButton.setText("Salir");
-                                                                                        detailDialog.dismiss();
-                                                                                    })
-                                                                                    .addOnFailureListener(e -> {
-                                                                                        Log.e(TAG, "Error adding user to participants", e);
-                                                                                    });
-                                                                            } else {
-                                                                                Log.d(TAG, "No such user document");
-                                                                            }
-                                                                        } else {
-                                                                            Log.d(TAG, "Failed with: ", task4.getException());
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    Log.d(TAG, "No such user document");
-                                                                }
-                                                            } else {
-                                                                Log.d(TAG, "Failed with: ", task3.getException());
-                                                            }
-                                                        });
-                                                    });
-                                                }
+                                                        } else {
+                                                            Log.d(TAG, "No such user document");
+                                                        }
+                                                    } else {
+                                                        Log.d(TAG, "Failed with: ", task3.getException());
+                                                    }
+                                                });
+
                                             } else {
                                                 Log.d(TAG, "No such user document");
                                             }
@@ -322,6 +283,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MListHolde
                     Log.d("TAG", "Query failed with ", task.getException());
                 }
             });
+
             // Show the detail dialog
             detailDialog.show();
         });
