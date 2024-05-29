@@ -143,7 +143,6 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.MListH
             TextView eventLugarTextView = detailDialog.findViewById(R.id.lugar);
             TextView eventParticipantTextView = detailDialog.findViewById(R.id.personas);
             ImageView eventQRImageView = detailDialog.findViewById(R.id.qr);
-            Button joinEventButton = detailDialog.findViewById(R.id.submitButton);
             ImageView eventImageView = detailDialog.findViewById(R.id.imagen);
 
             // When loading
@@ -195,24 +194,6 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.MListH
                                             if (document2.exists()) {
                                                 User user = document2.toObject(User.class);
                                                 eventCreatorTextView.setText(user.getName());
-                                                // Check if the user is already in the event
-                                                if (event1.getParticipants().contains(creator1)) {
-                                                    joinEventButton.setText("Salir");
-                                                    // When pressed, remove the user from the event
-                                                    joinEventButton.setOnClickListener(v1 -> {
-                                                        event1.getParticipants().remove(creator1);
-                                                        docRef.update("participants", event1.getParticipants());
-                                                        joinEventButton.setText("Unirse");
-                                                    });
-                                                } else {
-                                                    joinEventButton.setText("Unirse");
-                                                    // When pressed, add the user to the event
-                                                    joinEventButton.setOnClickListener(v1 -> {
-                                                        event1.getParticipants().add(creator1);
-                                                        docRef.update("participants", event1.getParticipants());
-                                                        joinEventButton.setText("Salir");
-                                                    });
-                                                }
                                             } else {
                                                 Log.d(TAG, "No such user document");
                                             }
