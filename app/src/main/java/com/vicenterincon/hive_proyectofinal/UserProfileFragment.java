@@ -142,7 +142,6 @@ public class UserProfileFragment extends Fragment {
 
         // Replace underscores with spaces
         String modifiedString = input.replace("_", " ");
-
         // Convert the whole string to lower case
         modifiedString = modifiedString.toLowerCase();
 

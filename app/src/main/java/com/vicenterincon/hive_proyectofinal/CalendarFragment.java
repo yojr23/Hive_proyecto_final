@@ -79,8 +79,7 @@ public class CalendarFragment extends Fragment {
                 // Query Firestore for events where the current user is a participant, from today onwards
                 CollectionReference eventsCollection = db.collection("events");
                 Query eventQuery = eventsCollection
-                        .whereGreaterThanOrEqualTo("date", today)
-                        .whereArrayContains("participants", userRef);
+                        .whereGreaterThanOrEqualTo("date", today);
 
                 eventQuery.get().addOnCompleteListener(eventTask -> {
                     if (eventTask.isSuccessful()) {
@@ -88,7 +87,10 @@ public class CalendarFragment extends Fragment {
                         List<Event> events = new ArrayList<>();
                         for (DocumentSnapshot document : eventTask.getResult()) {
                             Event event = document.toObject(Event.class);
-                            events.add(event);
+                            // Check if my user is a participant
+                            if (event != null && event.getParticipants().contains(userRef)) {
+                                events.add(event);
+                            }
                         }
                         loadingProgressBar.setVisibility(View.GONE);
                         if (eventsAdapter.get() != null) {
