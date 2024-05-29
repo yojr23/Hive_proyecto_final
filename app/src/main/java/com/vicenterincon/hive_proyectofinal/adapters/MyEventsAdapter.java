@@ -116,7 +116,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.MListH
 
         // Add a click listener to the card view
         cardView.setOnClickListener(v -> {
-            detailDialog.setContentView(R.layout.fragment_event_detail);
+            detailDialog.setContentView(R.layout.fragment_event_detail_less);
 
             LinearLayout dialogLinearLayout = detailDialog.findViewById(R.id.layoutCard);
             ProgressBar dialogProgressBar = detailDialog.findViewById(R.id.loadingProgressBar);

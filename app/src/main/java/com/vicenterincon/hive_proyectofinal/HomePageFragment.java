@@ -225,7 +225,7 @@ public class HomePageFragment extends Fragment {
             if (result.getContents() == null) {
                 Toast.makeText(requireContext(), requireContext().getString(R.string.evento_cancelado), Toast.LENGTH_LONG).show();
             } else {
-                detailDialog.setContentView(R.layout.fragment_event_detail);
+                detailDialog.setContentView(R.layout.fragment_event_detail_less);
                 String eventId = String.valueOf(result.getContents());
                 LinearLayout dialogLinearLayout = detailDialog.findViewById(R.id.layoutCard);
                 ProgressBar dialogProgressBar = detailDialog.findViewById(R.id.loadingProgressBar);
