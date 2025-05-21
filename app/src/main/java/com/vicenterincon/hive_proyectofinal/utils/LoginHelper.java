@@ -23,20 +23,28 @@ public class LoginHelper {
     }
 
     public void login(String username, String password, final LoginCallback callback) {
+        //se hace una query en firebase
+            //se va hacia la carpeta usuarios
         db.collection("users")
+                //se buca el username en firebase
                 .whereEqualTo("login", username)
+                //se obtiene la informacion de ese usuario con ese username
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             QuerySnapshot querySnapshot = task.getResult();
+                            //si es el resultado es diferente a vacio
                             if (!querySnapshot.isEmpty()) {
                                 DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                //se saca la contraseña
                                 String storedPassword = document.getString("password");
 
                                 if (storedPassword != null && storedPassword.equals(password)) {
+                                    //se guarda el authtoken
                                     String authToken = "";
+                                    //se guarda el user id
                                     String userId = document.getString("id");
 
                                     UserSession userSession = new UserSession(authToken, userId);
