@@ -19,10 +19,14 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //se llama al fragmento de registro que tiene el formulario
         setContentView(R.layout.fragment_sign_up);
         Button buttonSignUp = findViewById(R.id.buttonSignUp);
         SignUpHelper signUpHelper = new SignUpHelper();
         SessionManager session = new SessionManager(this);
+
+
+        //Inicio de getters de la info al hacer click en el boton
 
         buttonSignUp.setOnClickListener(v -> {
             String name = ((EditText) findViewById(R.id.editTextName)).getText().toString();
@@ -33,11 +37,18 @@ public class SignUpActivity extends AppCompatActivity {
             String selectedCareer = ((Spinner) findViewById(R.id.spinnerCareer)).getSelectedItem().toString();
             DatePicker birthdate = findViewById(R.id.datePickerBirthdate);
 
+
+        //fin de getters de la info al hacer click en el boton
+
+
             int year = birthdate.getYear();
             int month = birthdate.getMonth() + 1;
             int dayOfMonth = birthdate.getDayOfMonth();
             String birthdateStr = String.format("%d-%02d-%02d", year, month, dayOfMonth);
             Date birthdateDate = Date.valueOf(birthdateStr);
+
+
+            //Inicio de validaroes
 
             if (name.isEmpty()) {
                 ((EditText) findViewById(R.id.editTextName)).setError(getString(R.string.sign_up_error_name));
@@ -79,6 +90,11 @@ public class SignUpActivity extends AppCompatActivity {
                 return;
             }
 
+
+            //fin de validadores
+
+
+            //verificacion de que la contraseña tenga una mayuscula, un caracter especial y un nuemero
             String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&.])[A-Za-z\\d@$!%.*?&]{8,}$";
             if (!password.matches(regex)) {
                 ((EditText) findViewById(R.id.editTextPassword)).setError(getString(R.string.sign_up_error_password_validation));
@@ -87,6 +103,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             User userToAdd = new User("", name, username, email, password, "", true, "ADMIN", selectedCareer, birthdateDate);
+
+            //se llama el signuphelper
             signUpHelper.signUp(userToAdd, new SignUpHelper.SignUpCallback() {
                 @Override
                 public void onSignUpSuccess(UserSession userSession) {
